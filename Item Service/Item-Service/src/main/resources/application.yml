@@ -5,9 +5,10 @@ spring:
   application:
     name: item-service
   datasource:
-    url: jdbc:postgresql://localhost:3030/item-db
-    username: postgres
-    password: root
+    # Uses Cloud environment variables if present, otherwise falls back to your local setup
+    url: ${DB_URL:jdbc:postgresql://localhost:3030/item-db}
+    username: ${DB_USERNAME:postgres}
+    password: ${DB_PASSWORD:root}
     driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:

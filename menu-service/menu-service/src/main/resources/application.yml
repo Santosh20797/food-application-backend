@@ -3,11 +3,12 @@ server:
 
 spring:
   application:
-    name: payment-service
+    name: menu-service
   datasource:
-    url: jdbc:postgresql://localhost:3030/menu_db
-    username: postgres
-    password: root
+    # Uses Cloud environment variables if present, otherwise falls back to your local setup
+    url: ${DB_URL:jdbc:postgresql://localhost:3030/menu_db}
+    username: ${DB_USERNAME:postgres}
+    password: ${DB_PASSWORD:root}
     driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
