@@ -1,0 +1,27 @@
+version: '3.8'
+services:
+  kafka:
+    image: confluentinc/cp-kafka:7.3.0
+    container_name: foodapp-kafka
+    ports:
+      - "9092:9092"
+    environment:
+      # 1. Enable KRaft mode by declaring process roles (Node acts as both controller & broker)
+      KAFKA_NODE_ID: 1
+      KAFKA_PROCESS_ROLES: 'broker,controller'
+
+      # 2. Tell the node who votes for cluster leadership (Points to itself for single-node setup)
+      KAFKA_CONTROLLER_QUORUM_VOTERS: '1@localhost:9093'
+
+      # 3. Configure communication listeners
+      KAFKA_LISTENERS: 'PLAINTEXT://0.0.0.0:9092,CONTROLLER://0.0.0.0:9093'
+      KAFKA_ADVERTISED_LISTENERS: 'PLAINTEXT://localhost:9092'
+      KAFKA_CONTROLLER_LISTENER_NAMES: 'CONTROLLER'
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: 'CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT'
+
+      # 4. Mandatory: A unique cluster ID for KRaft storage formatting
+      CLUSTER_ID: 'MkU3OEVBNTcwNTg0NDM4Qk'
+
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REREPLICATION_FACTOR: 1
