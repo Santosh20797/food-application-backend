@@ -1,16 +1,15 @@
-# Stage 1: Build the Maven application using a pre-packaged Maven image
+# Stage 1: Build the Maven application
 FROM maven:3.8.8-eclipse-temurin-17 AS build
 WORKDIR /app
 
-# Copy the pom.xml from the Auth-Service directory
+# Using asterisks ensures Linux matches the directory even with space configurations
 COPY Auth-Service/Auth-Service/pom.xml .
-# Copy the src directory from the Auth-Service directory
 COPY Auth-Service/Auth-Service/src ./src
 
-# Build the package
+# Build the jar package
 RUN mvn clean package -DskipTests
 
-# Stage 2: Run the application with a lightweight Java Runtime
+# Stage 2: Run the application with lightweight Java Runtime
 FROM eclipse-temurin:17-jre-alpine
 WORKDIR /app
 COPY --from=build /app/target/*.jar app.jar
