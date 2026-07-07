@@ -1,19 +1,13 @@
-# Stage 1: Build the Maven application
-FROM maven:3.8.8-eclipse-temurin-17 AS build
+# Step 1: Build the specific sub-module
+FROM maven:3.9-eclipse-temurin-17 AS build
 WORKDIR /app
-
-# Safe low-memory arguments for multi-module maven isolation
-ENV MAVEN_OPTS="-Xmx384m -XX:MaxMetaspaceSize=128m"
-
-# Copy the entire root folder context to map dependencies cleanly
+# Copy only the files needed for this specific service
 COPY . .
+RUN mvn clean package -DskipTests
 
-# 🚀 FIXED COMMAND: Explicitly builds only the Auth-Service and skips all other heavy projects
-RUN mvn clean package -B -DskipTests -pl Auth-Service/Auth-Service -am
-
-# Stage 2: Run the application with a lightweight Java Runtime
+# Step 2: Runtime image
 FROM eclipse-temurin:17-jre-alpine
 WORKDIR /app
-COPY --from=build /app/Auth-Service/Auth-Service/target/*.jar app.jar
-EXPOSE 8086
-ENTRYPOINT ["java", "-Xmx256m", "-jar", "app.jar"]
+COPY --from=build /app/target/*.jar app.jar
+EXPOSE 8080
+ENTRYPOINT ["java", "-jar", "app.jar"]

@@ -1,11 +1,10 @@
 server:
-  port: 8081
+  port: ${PORT:8080}
 
 spring:
   application:
     name: order-service
   datasource:
-    # Uses Cloud environment variables if present, otherwise falls back to your local setup
     url: ${DB_URL:jdbc:postgresql://localhost:3030/food-application-db}
     username: ${DB_USERNAME:postgres}
     password: ${DB_PASSWORD:root}
@@ -19,7 +18,11 @@ spring:
         dialect: org.hibernate.dialect.PostgreSQLDialect
 
   kafka:
-    bootstrap-servers: localhost:9092
+    bootstrap-servers: ${KAFKA_SERVERS:localhost:9092}
+    properties:
+      security.protocol: ${KAFKA_SECURITY_PROTOCOL:PLAINTEXT}
+      sasl.mechanism: ${KAFKA_SASL_MECHANISM:PLAIN}
+      sasl.jaas.config: ${KAFKA_JAAS_CONFIG:}
     producer:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
@@ -29,4 +32,4 @@ spring:
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
       value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
       properties:
-        spring.json.trusted.packages: "com.foodapp.Order.Service.dto,com.foodapp.Payment.Service.dto"
+        spring.json.trusted.packages: "com.foodapp.*"

@@ -1,27 +1,52 @@
-version: '3.8'
-services:
-  kafka:
-    image: confluentinc/cp-kafka:7.3.0
-    container_name: foodapp-kafka
-    ports:
-      - "9092:9092"
-    environment:
-      # 1. Enable KRaft mode by declaring process roles (Node acts as both controller & broker)
-      KAFKA_NODE_ID: 1
-      KAFKA_PROCESS_ROLES: 'broker,controller'
+#version: '3.8'
+#services:
+#  kafka:
+#    image: confluentinc/cp-kafka:7.3.0
+#    container_name: foodapp-kafka
+#    ports:
+#      - "9092:9092"
+#    environment:
+#      # 1. Enable KRaft mode by declaring process roles (Node acts as both controller & broker)
+#      KAFKA_NODE_ID: 1
+#      KAFKA_PROCESS_ROLES: 'broker,controller'
+#
+#      # 2. Tell the node who votes for cluster leadership (Points to itself for single-node setup)
+#      KAFKA_CONTROLLER_QUORUM_VOTERS: '1@localhost:9093'
+#
+#      # 3. Configure communication listeners
+#      KAFKA_LISTENERS: 'PLAINTEXT://0.0.0.0:9092,CONTROLLER://0.0.0.0:9093'
+#      KAFKA_ADVERTISED_LISTENERS: 'PLAINTEXT://localhost:9092'
+#      KAFKA_CONTROLLER_LISTENER_NAMES: 'CONTROLLER'
+#      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: 'CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT'
+#
+#      # 4. Mandatory: A unique cluster ID for KRaft storage formatting
+#      CLUSTER_ID: 'MkU3OEVBNTcwNTg0NDM4Qk'
+#
+#      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+#      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+#      KAFKA_TRANSACTION_STATE_LOG_REREPLICATION_FACTOR: 1
 
-      # 2. Tell the node who votes for cluster leadership (Points to itself for single-node setup)
-      KAFKA_CONTROLLER_QUORUM_VOTERS: '1@localhost:9093'
 
-      # 3. Configure communication listeners
-      KAFKA_LISTENERS: 'PLAINTEXT://0.0.0.0:9092,CONTROLLER://0.0.0.0:9093'
-      KAFKA_ADVERTISED_LISTENERS: 'PLAINTEXT://localhost:9092'
-      KAFKA_CONTROLLER_LISTENER_NAMES: 'CONTROLLER'
-      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: 'CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT'
-
-      # 4. Mandatory: A unique cluster ID for KRaft storage formatting
-      CLUSTER_ID: 'MkU3OEVBNTcwNTg0NDM4Qk'
-
-      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
-      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
-      KAFKA_TRANSACTION_STATE_LOG_REREPLICATION_FACTOR: 1
+# Step 1: Build the application using Maven
+FROM maven:3.9-eclipse-temurin-17 AS build
+WORKDIR /app
+  
+  # Copy the pom.xml and source code into the container
+COPY pom.xml .
+COPY src ./src
+  
+  # Compile and package the application into a runnable JAR file
+RUN mvn clean package -DskipTests
+  
+  # Step 2: Create a lightweight runtime image to execute the application
+FROM eclipse-temurin:17-jre-alpine
+WORKDIR /app
+  
+  # Copy the compiled JAR file from the build step into the runtime step
+COPY --from=build /app/target/*.jar app.jar
+  
+  # Expose port 8080 (Cloud Run's default routing port)
+EXPOSE 8080
+  
+  # Run the Spring Boot application when the container starts
+ENTRYPOINT ["java", "-jar", "app.jar"]
