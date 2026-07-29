@@ -18,6 +18,7 @@
 #springdoc:
 #  pre-loading-enabled: false
 
+
 server:
   port: ${PORT:8080}
 
@@ -38,7 +39,6 @@ spring:
 
 springdoc:
   pre-loading-enabled: false
-
 
 
 
