@@ -26,9 +26,9 @@ spring:
     name: auth-service
 
   datasource:
-    url: ${DB_URL:jdbc:postgresql://localhost:3030/Auth-db}
-    username: ${DB_USERNAME:postgres}
-    password: ${DB_PASSWORD:root}
+    url: jdbc:postgresql:///auth-db?cloudSqlInstance=food-application-prod:asia-south1:auth-db&socketFactory=com.google.cloud.sql.postgres.SocketFactory
+    username: postgres
+    password: Santosh123!
     driver-class-name: org.postgresql.Driver
 
   jpa:
