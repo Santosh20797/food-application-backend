@@ -9,11 +9,11 @@ import org.springframework.security.web.SecurityFilterChain;
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
-//
-//    @Bean
-//    public BCryptPasswordEncoder passwordEncoder() {
-//        return new BCryptPasswordEncoder();
-//    }
+
+    @Bean
+    public BCryptPasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
 //
 //    @Bean
 //    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
