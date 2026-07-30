@@ -29,7 +29,7 @@ spring:
   datasource:
     url: jdbc:postgresql:///auth-db?cloudSqlInstance=food-application-prod:asia-south1:auth-db&socketFactory=com.google.cloud.sql.postgres.SocketFactory
     username: postgres
-    password: Santosh123!
+    password: Santosh20797@
     driver-class-name: org.postgresql.Driver
 
   jpa:
