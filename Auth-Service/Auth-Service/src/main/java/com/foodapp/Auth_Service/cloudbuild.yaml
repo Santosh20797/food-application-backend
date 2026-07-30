@@ -1,5 +1,6 @@
 steps:
   - name: 'gcr.io/cloud-builders/docker'
+    dir: 'Auth-Service/Auth-Service'
     args:
       - 'build'
       - '-t'
