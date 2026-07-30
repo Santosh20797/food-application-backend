@@ -21,6 +21,12 @@ public class AuthController {
     @Autowired
     private BCryptPasswordEncoder passwordEncoder; // Inject the password encoder
 
+    @GetMapping("/health")
+    public ResponseEntity<String> health() {
+        return ResponseEntity.ok("Auth Service Running");
+    }
+
+
     @PostMapping("/register")
     public ResponseEntity<?> registerUser(@RequestBody User user) {
         if (userRepository.findByUsername(user.getUsername()).isPresent()) {
