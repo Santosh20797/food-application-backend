@@ -18,7 +18,6 @@
 #springdoc:
 #  pre-loading-enabled: false
 
-
 server:
   port: ${PORT:8080}
 
@@ -33,13 +32,13 @@ spring:
     driver-class-name: org.postgresql.Driver
 
   jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
     hibernate:
       ddl-auto: update
     show-sql: true
 
 springdoc:
   pre-loading-enabled: false
-
 
 
 
